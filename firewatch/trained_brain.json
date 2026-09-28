@@ -1,0 +1,14 @@
+{
+  "model": "Drosophila_Connectome_Firewatch_v1",
+  "drone_target": "FLY-01",
+  "training_date": "2026-09-25 14:41:05",
+  "num_episodes": 25,
+  "success_rate_pct": 44.0,
+  "weights": {
+    "orn_gain": 161.01,
+    "trpa1_gain": 9.72,
+    "upwind_turn_gain": 46.5,
+    "surge_threshold": 0.06,
+    "casting_period": 4.85
+  }
+}

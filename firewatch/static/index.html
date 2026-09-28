@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔥 FLYBRIDGE v0.1 — Red de Nodos Arbóreos & Drone-in-a-Box de Autoridades</title>
+  <meta name="description" content="Sistema bio-inspirado en NeuroFly combinando nodos sensores ignífugos en árboles con estación Drone-in-a-Box operada desde instalaciones de Bomberos y Carabineros.">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body class="dark-theme">
+
+  <!-- TOP BAR: Status, Metrics & Branding -->
+  <header class="top-nav" id="topNav">
+    <div class="brand-group">
+      <div class="brand-logo">
+        <span class="logo-emoji">🌿</span>
+        <span class="bio-badge">🧬 NEUROFLY EDGE</span>
+      </div>
+      <div class="brand-titles">
+        <h1 class="brand-title">FLYBRIDGE v0.1</h1>
+        <span class="brand-subtitle">RED DE NODOS ARBÓREOS IGNÍFUGOS & ESTACIÓN DRONE-IN-A-BOX EN CUARTEL</span>
+      </div>
+    </div>
+
+    <!-- Quick Telemetry Badges -->
+    <div class="telemetry-bar" id="telemetryBar">
+      <div class="badge-item" title="Nodos sensores ignífugos distribuidos en árboles">
+        <span class="badge-label">NODOS ARBÓREOS</span>
+        <span class="badge-value" id="badgeNodes">10 ACTIVOS (LoRa 915MHz)</span>
+      </div>
+      <div class="badge-item" title="Gateway de cuenca en cumbre con enlace satelital Starlink y 4G">
+        <span class="badge-label">GATEWAY CUENCA</span>
+        <span class="badge-value" id="badgeGateway">STARLINK ACTIVO</span>
+      </div>
+      <div class="badge-item" title="Estación base protegida en recinto de Bomberos / Carabineros">
+        <span class="badge-label">DRONE-IN-A-BOX</span>
+        <span class="badge-value alert-pulse" id="badgeDock">DESPLIEGUE &lt;45s</span>
+      </div>
+      <div class="badge-item" title="Viento en tiempo real en la cuenca forestal">
+        <span class="badge-label">VIENTO CUENCA</span>
+        <span class="badge-value" id="badgeWind">27 km/h ↗ NE</span>
+      </div>
+    </div>
+
+    <!-- System Health & Actions -->
+    <div class="top-actions">
+      <button class="btn btn-bomberos" id="btnOpenBomberosModal" title="Ver Ficha Operativa y Ruta de Bomberos">
+        🚒 BOMBEROS
+      </button>
+      <button class="btn btn-carabineros" id="btnOpenCencoModal" title="Ver Carpeta Investigativa y Evidencia Forense Carabineros CENCO">
+        👮 CENCO FORENSE
+      </button>
+      <button class="btn btn-warning-action" id="btnSimulateIgnition" title="Simular ignición en un árbol para ver el flujo completo en vivo">
+        ⚡ SIMULAR FOCO
+      </button>
+      <button class="btn btn-primary" id="btnLaunchDroneManual" title="Despegar Dron Verificador Inmediato">
+        🚀 DESPEGAR DRON
+      </button>
+    </div>
+  </header>
+
+  <!-- WORKFLOW HIGHLIGHT STRIP (El Flujo Operativo Completo) -->
+  <div class="workflow-strip" id="workflowStrip">
+    <div class="workflow-step active-step">
+      <span class="step-num">1</span>
+      <span class="step-text"><b>Bosque / Árbol:</b> Nodos Ignífugos (CO2/VOCs + Térmica + Viento)</span>
+    </div>
+    <div class="workflow-arrow">➔</div>
+    <div class="workflow-step">
+      <span class="step-num">2</span>
+      <span class="step-text"><b>Inferencia NeuroFly:</b> Lóbulo Olfativo (dC/dt) & Filtro Solar</span>
+    </div>
+    <div class="workflow-arrow">➔</div>
+    <div class="workflow-step">
+      <span class="step-num">3</span>
+      <span class="step-text"><b>LoRaWAN / Mesh:</b> Paquete binario ultracompacto (&lt;50 bytes)</span>
+    </div>
+    <div class="workflow-arrow">➔</div>
+    <div class="workflow-step">
+      <span class="step-num">4</span>
+      <span class="step-text"><b>Gateway Cuenca:</b> Enlace Satelital Starlink o 4G</span>
+    </div>
+    <div class="workflow-arrow">➔</div>
+    <div class="workflow-step">
+      <span class="step-num">5</span>
+      <span class="step-text"><b>Servidor Central:</b> Triangulación & API de Misiones</span>
+    </div>
+    <div class="workflow-arrow">➔</div>
+    <div class="workflow-step">
+      <span class="step-num">6</span>
+      <span class="step-text"><b>Cuartel Oficial:</b> Drone-in-a-Box despegue &lt;45 s</span>
+    </div>
+    <div class="workflow-arrow">➔</div>
+    <div class="workflow-step">
+      <span class="step-num">7</span>
+      <span class="step-text"><b>Despacho Dual:</b> Bomberos (Ruta/Fuego) + CENCO (Evidencia 4K)</span>
+    </div>
+  </div>
+
+  <!-- MAIN WORKSPACE -->
+  <div class="main-container">
+    
+    <!-- LEFT SIDEBAR: Nodos Arbóreos Ignífugos & Inferencia Edge -->
+    <aside class="sidebar-left" id="sidebarLeft">
+      
+      <!-- GIS Layers Toggle -->
+      <div class="panel-section">
+        <div class="section-header">
+          <span class="section-icon">🗺️</span>
+          <h3>CAPAS GIS TÁCTICAS</h3>
+        </div>
+        <div class="layer-toggles">
+          <label class="toggle-control">
+            <input type="checkbox" id="layerNodes" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">🌳 Nodos Arbóreos Ignífugos (10)</span>
+          </label>
+          <label class="toggle-control">
+            <input type="checkbox" id="layerLoraMesh" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">📡 Red LoRaWAN 915 MHz / Gateway</span>
+          </label>
+          <label class="toggle-control">
+            <input type="checkbox" id="layerAuthorityBase" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">🏢 Cuartel Bomberos / Retén Carabineros</span>
+          </label>
+          <label class="toggle-control">
+            <input type="checkbox" id="layerDroneFlight" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">🛸 Dron Verificador &lt;45s</span>
+          </label>
+          <label class="toggle-control">
+            <input type="checkbox" id="layerFireSpread" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">🔥 Cono de Propagación del Fuego</span>
+          </label>
+          <label class="toggle-control">
+            <input type="checkbox" id="layerBomberosRoute" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">🚒 Ruta Acceso Carros Bomba</span>
+          </label>
+          <label class="toggle-control">
+            <input type="checkbox" id="layerCencoRoadblocks" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">🚧 Cortes Perimetrales CENCO</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Live Tree Nodes Status List -->
+      <div class="panel-section">
+        <div class="section-header">
+          <span class="section-icon">🌲</span>
+          <h3>RED DE NODOS ARBÓREOS IGNÍFUGOS</h3>
+        </div>
+        <div class="tree-nodes-list" id="treeNodesList">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Edge Inference Inspector (NeuroFly in the Tree) -->
+      <div class="panel-section" id="edgeInspectorSection">
+        <div class="section-header">
+          <span class="section-icon">🧬</span>
+          <h3>INSPECTOR DE NODO (EDGE PYTHON)</h3>
+        </div>
+        <div class="node-inspector-box" id="nodeInspectorBox">
+          <div class="inspector-node-title">
+            <span id="inspectNodeName">NODE-ARBOR-03 · Litre</span>
+            <span class="status-pill alert" id="inspectNodeStatus">ALERTA IGNICIÓN</span>
+          </div>
+
+          <!-- Lóbulo Olfativo -->
+          <div class="bio-subsystem">
+            <div class="subsystem-header">
+              <span>👃 LÓBULO OLFATIVO (dC/dt DE GASES)</span>
+              <span class="val-mono" id="valGasDcDt">+4.2 ppm/s</span>
+            </div>
+            <div class="bio-bar-wrapper">
+              <div class="bio-bar-fill red" id="barGasRate" style="width: 84%"></div>
+            </div>
+            <div class="subsystem-desc" id="descGasPlume">
+              Micropluma diluida detectada por viento antes de concentración visible masiva.
+            </div>
+          </div>
+
+          <!-- Médula / Lámina Visual: Flujo Térmico Convectivo -->
+          <div class="bio-subsystem">
+            <div class="subsystem-header">
+              <span>🌡️ FLUJO TÉRMICO CONVECTIVO MULTIZONA</span>
+              <span class="val-mono" id="valConvectiveGrad">Δ=+16.4 °C</span>
+            </div>
+            <div class="bio-bar-wrapper">
+              <div class="bio-bar-fill orange" id="barConvectiveGrad" style="width: 78%"></div>
+            </div>
+            <div class="subsystem-desc" id="descThermalConvection">
+              Gradiente ascendente rápido con parpadeo errático (combustión real verificada).
+            </div>
+          </div>
+
+          <!-- Filtro Neuromórfico de Falsos Positivos -->
+          <div class="filter-status-card" id="filterStatusCard">
+            <div class="f-header">
+              <span>🛡️ FILTRO NEUROMÓRFICO FALSOS POSITIVOS</span>
+              <span class="f-badge passed" id="filterBadge">COINCIDENCIA VÁLIDA</span>
+            </div>
+            <p class="f-text" id="filterExplanation">
+              Discriminación solar superada: No es calentamiento diurno uniforme. Coincidencia quimio-térmica confirmada con 94% de confianza.
+            </p>
+          </div>
+
+          <!-- Paquete LoRa Compacto (<50 bytes) -->
+          <div class="lora-packet-card">
+            <div class="lora-header">
+              <span>📡 PAQUETE LoRaWAN / MESH (915 MHz)</span>
+              <span class="lora-size-tag" id="loraSizeTag">32 BYTES (&lt;50 B)</span>
+            </div>
+            <div class="lora-hex-box" id="loraHexBox">
+              0003-68D7-01FD-CE82-0195-00A4-002A-0258-0055-010E-0041-5E03-61B8
+            </div>
+            <div class="lora-decoded-grid">
+              <div><b>ID:</b> <span id="lpId">3</span></div>
+              <div><b>Temp:</b> <span id="lpTemp">40.5°C</span></div>
+              <div><b>dC/dt:</b> <span id="lpDcdt">+4.2</span></div>
+              <div><b>Viento:</b> <span id="lpWind">27 km/h</span></div>
+              <div><b>Confianza:</b> <span id="lpConf">94%</span></div>
+              <div><b>LiFePO4:</b> <span id="lpBat">98%</span></div>
+            </div>
+          </div>
+
+          <!-- Infraestructura Física Ignífuga -->
+          <div class="hardware-specs-card">
+            <div class="hw-title">INFRAESTRUCTURA FÍSICA IGNÍFUGA:</div>
+            <ul class="hw-list">
+              <li>🔥 Chasis: Polímero UL94 V-0 / Barrera Cerámica 600°C</li>
+              <li>💧 Membrana PTFE hidrofóbica: Gases ingresan, repulsa de agua y polvo</li>
+              <li>🔋 Celda LiFePO4 térmica estable + Mini panel solar continuo</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </aside>
+
+    <!-- CENTER: GIS MAP & LIVE VERIFIER DRONE DUAL-VIEW -->
+    <main class="map-viewport">
+      <div id="gisMap" class="gis-map"></div>
+      <canvas id="windCanvas" class="overlay-canvas"></canvas>
+
+      <!-- Map Legend Overlay -->
+      <div class="map-legend">
+        <div class="legend-title">ELEMENTOS TÁCTICOS</div>
+        <div class="legend-row"><span class="badge-dot green"></span> Nodo Arbóreo Normal</div>
+        <div class="legend-row"><span class="badge-dot red"></span> Nodo en Alerta / Foco</div>
+        <div class="legend-row"><span class="badge-dot cyan"></span> Enlace LoRaWAN 915 MHz</div>
+        <div class="legend-row"><span class="badge-dot purple"></span> Gateway Cuenca (Starlink)</div>
+        <div class="legend-row"><span class="badge-dot blue"></span> Cuartel Oficial Bomberos/Carabineros</div>
+        <div class="legend-row"><span class="badge-dot yellow"></span> Dron Verificador (&lt;45s)</div>
+        <div class="legend-row"><span class="badge-dot orange"></span> Cono de Propagación del Fuego</div>
+      </div>
+
+      <!-- LIVE HUD: DOCKING STATION & DRON VERIFICADOR (<45 s) -->
+      <div class="drone-box-hud" id="droneBoxHud">
+        <div class="hud-header">
+          <div class="hud-title-wrap">
+            <span class="hud-pulse-dot"></span>
+            <div>
+              <span class="hud-main-title">ESTACIÓN DRONE-IN-A-BOX · TENENCIA OFICIAL</span>
+              <span class="hud-sub-title" id="hudFacilityName">14ª Cía Bomberos & Retén Carabineros San Carlos</span>
+            </div>
+          </div>
+          <div class="hud-hatch-indicator">
+            <span class="h-label">COMPUERTA MOTORIZADA:</span>
+            <span class="h-val open" id="hudHatchVal">ABIERTA (100%)</span>
+          </div>
+        </div>
+
+        <!-- Takeoff Timer & Flight Bar -->
+        <div class="launch-countdown-row">
+          <div class="countdown-card">
+            <span class="c-title">VENTANA DE DESPEGUE AUTÓNOMO</span>
+            <div class="c-number-row">
+              <span class="c-num" id="hudLaunchTime">32.0</span>
+              <span class="c-unit">segundos</span>
+              <span class="c-tag verified" id="hudLaunchBadge">✅ DESPEGUE EXITOSO (&lt;45s)</span>
+            </div>
+          </div>
+          <div class="drone-flight-telemetry">
+            <div><b>Estado:</b> <span id="hudDroneStatus">RECONOCIMIENTO EN ÓRBITA</span></div>
+            <div><b>Velocidad:</b> <span id="hudDroneSpeed">76.0 km/h</span></div>
+            <div><b>Altitud:</b> <span id="hudDroneAlt">75 m</span></div>
+            <div><b>Batería:</b> <span id="hudDroneBattery">94%</span></div>
+          </div>
+        </div>
+
+        <!-- DUAL SPECIALIZED PAYLOAD: FLIR Radiometric Thermal + 4K Optical Forensic -->
+        <div class="payload-dual-grid">
+          
+          <!-- Cámara Térmica Radiométrica (FLIR) para Bomberos -->
+          <div class="payload-box flir-box">
+            <div class="p-header">
+              <span>🌡️ FLIR RADIOMÉTRICA (BOMBEROS)</span>
+              <span class="p-tag ir">INFRARROJO IR</span>
+            </div>
+            <div class="flir-screen">
+              <div class="flir-crosshair"></div>
+              <div class="flir-thermal-blob"></div>
+              <div class="flir-overlay-text">
+                <div>NÚCLEO: <b id="flirCoreTemp">542.0 °C</b></div>
+                <div>PERÍMETRO: <b id="flirPerimeter">188.5 m</b></div>
+                <div>PROPAGACIÓN: <b id="flirSpreadRate">3.8 m/min</b></div>
+                <div>INTENSIDAD: <b id="flirIntensity">1,850 kW/m</b></div>
+              </div>
+            </div>
+            <div class="payload-footer-note">
+              Datos para dimensionar carros bomba, líneas de agua y ataque directo por el flanco.
+            </div>
+          </div>
+
+          <!-- Cámara Óptica 4K con Zoom para Carabineros CENCO y Fiscalía -->
+          <div class="payload-box optical-box">
+            <div class="p-header">
+              <span>📷 ÓPTICA 4K CON ZOOM FORENSE (CENCO)</span>
+              <span class="p-tag zoom">ZOOM 12.5x</span>
+            </div>
+            <div class="optical-screen">
+              <div class="optical-bbox car-bbox">
+                <span class="bbox-label">VEHÍCULO SOSPECHOSO (94%)</span>
+              </div>
+              <div class="optical-bbox track-bbox">
+                <span class="bbox-label">HUELLA TRACCIÓN RECIENTE (88%)</span>
+              </div>
+              <div class="optical-bbox suspect-bbox">
+                <span class="bbox-label">INDIVIDUO EN FUGA (82%)</span>
+              </div>
+              <div class="optical-overlay-text">
+                <div>EVIDENCIA SHA-256: <b id="opticalHash">E8F4A9C102BF7A11</b></div>
+                <div>CAPTURA: <b id="opticalTime">15:44:20 UTC</b></div>
+                <div>ESTADO: <b>DISPONIBLE MINISTERIO PÚBLICO</b></div>
+              </div>
+            </div>
+            <div class="payload-footer-note">
+              Registro probatorio para cierre perimetral de rutas y carpeta penal ante incendios intencionales.
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- RIGHT SIDEBAR: Multiorganization Tactical Dispatch & Operations -->
+    <aside class="sidebar-right" id="sidebarRight">
+      
+      <!-- Operations Tabs -->
+      <div class="dispatch-tabs-header">
+        <button class="d-tab-btn active" id="tabBomberos" title="Central de Alarmas de Bomberos">
+          🚒 BOMBEROS (132)
+        </button>
+        <button class="d-tab-btn" id="tabCenco" title="Central de Comunicaciones Carabineros">
+          👮 CENCO (133)
+        </button>
+      </div>
+
+      <!-- TAB 1: CENTRAL DE ALARMAS DE BOMBEROS -->
+      <div class="dispatch-tab-content active" id="contentBomberos">
+        
+        <div class="panel-section">
+          <div class="section-header">
+            <span class="section-icon">🚨</span>
+            <h3>DESPACHO CENTRAL DE ALARMAS</h3>
+          </div>
+          <div class="incident-dispatch-card">
+            <div class="idc-row">
+              <span class="idc-label">FOCO IDENTIFICADO:</span>
+              <span class="idc-val" id="bTargetNode">NODE-ARBOR-03 (Litre)</span>
+            </div>
+            <div class="idc-row">
+              <span class="idc-label">COORDENADAS GPS:</span>
+              <span class="idc-val mono" id="bCoords">-33.4195, -70.5835</span>
+            </div>
+            <div class="idc-row">
+              <span class="idc-label">SECTOR:</span>
+              <span class="idc-val">Cuenca Alta Sector San Carlos</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ruta de Acceso Vehicular Más Expedita -->
+        <div class="panel-section">
+          <div class="section-header">
+            <span class="section-icon">🛣️</span>
+            <h3>RUTA DE ACCESO VEHICULAR MÁS EXPEDITA</h3>
+          </div>
+          <div class="access-route-card">
+            <div class="route-name" id="bRouteName">Pista Forestal Cortafuego Quebrada Honda</div>
+            <div class="route-specs">
+              <div><b>Superficie:</b> <span id="bSurface">Maicillo 6m (Apto 4x4)</span></div>
+              <div><b>Portón de Acceso:</b> <span id="bGate">Portón 3 - Camino El Refugio</span></div>
+              <div class="route-highlight-row">
+                <div><b>Distancia:</b> <span class="hl-num" id="bDist">4.8 km</span></div>
+                <div><b>ETA Carro Bomba:</b> <span class="hl-num eta" id="bEta">8.5 min</span></div>
+              </div>
+              <div class="recommended-units">
+                <b>Material Mayor Recomendado:</b>
+                <span id="bUnits">2 Carros Forestales 4x4 (B-14 / BF-2) + 1 Aljibe 10.000 L</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Proyección del Comportamiento del Fuego -->
+        <div class="panel-section">
+          <div class="section-header">
+            <span class="section-icon">🌬️</span>
+            <h3>PROYECCIÓN DEL AVANCE DEL FUEGO</h3>
+          </div>
+          <div class="fire-behavior-card">
+            <div class="behavior-metric-grid">
+              <div class="b-met">
+                <span class="bm-lbl">VELOCIDAD AVANCE</span>
+                <span class="bm-val" id="bSpreadRate">3.8 m/min</span>
+              </div>
+              <div class="b-met">
+                <span class="bm-lbl">DIRECCIÓN FRENTE</span>
+                <span class="bm-val" id="bSpreadDir">↗ Noreste (65°)</span>
+              </div>
+              <div class="b-met">
+                <span class="bm-lbl">LONGITUD LLAMA</span>
+                <span class="bm-val" id="bFlameLen">2.1 m</span>
+              </div>
+              <div class="b-met">
+                <span class="bm-lbl">ÁREA A 30 MIN</span>
+                <span class="bm-val alert" id="bArea30m">2.4 hectáreas</span>
+              </div>
+            </div>
+            <p class="behavior-text" id="bBehaviorText">
+              Frente impulsado por viento de 27 km/h y térmicamente alimentado por ladera barlovento. Cortafuego natural a 380m al este.
+            </p>
+          </div>
+        </div>
+
+        <!-- Fuentes de Agua Tácticas -->
+        <div class="panel-section">
+          <div class="section-header">
+            <span class="section-icon">💧</span>
+            <h3>ABASTECIMIENTO DE AGUA CERCANO</h3>
+          </div>
+          <div class="water-sources-list">
+            <div class="water-item">
+              <div>
+                <b>Tranque Agrícola San Carlos</b>
+                <div class="w-sub">Apto motobomba & helibalde Bambi</div>
+              </div>
+              <div class="w-meta">150.000 L · a 1.4 km</div>
+            </div>
+            <div class="water-item">
+              <div>
+                <b>Grifo Rural Alta Presión 100mm</b>
+                <div class="w-sub">Acceso directo en camino principal</div>
+              </div>
+              <div class="w-meta">Red Continua · a 0.8 km</div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block" id="btnDispatchBomberosDirect">
+            🚨 CONFIRMAR DESPACHO A CENTRAL DE BOMBEROS
+          </button>
+        </div>
+
+      </div>
+
+      <!-- TAB 2: COMUNICACIONES CARABINEROS (CENCO - 133) -->
+      <div class="dispatch-tab-content" id="contentCenco">
+        
+        <div class="panel-section">
+          <div class="section-header">
+            <span class="section-icon">🛡️</span>
+            <h3>ALERTA CENCO & EVIDENCIA FORENSE</h3>
+          </div>
+          <div class="cenco-alert-banner">
+            <div class="cab-title">ALERTA POLICIAL POR IGNICIÓN SOSPECHOSA</div>
+            <div class="cab-sub" id="cencoCode">CÓDIGO: CENCO-ALERTA-84920 · PRIORIDAD 1</div>
+          </div>
+        </div>
+
+        <!-- Evidencias Detección Óptica 4K -->
+        <div class="panel-section">
+          <div class="section-header">
+            <span class="section-icon">🔍</span>
+            <h3>HALLAZGOS FORENSES GEORREFERENCIADOS</h3>
+          </div>
+          <div class="forensic-items-list" id="forensicItemsList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Plan de Cierre Perimetral de Rutas -->
+        <div class="panel-section">
+          <div class="section-header">
+            <span class="section-icon">🚧</span>
+            <h3>PLAN DE CIERRE PERIMETRAL DE RUTAS</h3>
+          </div>
+          <p class="plan-desc">
+            Instrucción táctica de control vehicular para interceptar a presuntos autores intencionales:
+          </p>
+          <div class="roadblock-list" id="roadblockList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Carpeta Investigativa Fiscalía -->
+        <div class="panel-section">
+          <div class="section-header">
+            <span class="section-icon">⚖️</span>
+            <h3>CARPETA INVESTIGATIVA MINISTERIO PÚBLICO</h3>
+          </div>
+          <div class="prosecutor-box">
+            <div class="pb-row"><b>Destinatario:</b> Fiscalía Local / Unidad Investigadora Incendios</div>
+            <div class="pb-row"><b>Cadena de Custodia:</b> Firma Digital SHA-256 Verificada</div>
+            <div class="pb-row"><b>Prueba Pericial:</b> Fotogramas 4K + Telemetría LoRa Árbol + FLIR Dron</div>
+          </div>
+          <button class="btn btn-carabineros btn-block" id="btnExportProsecutorDossier">
+            📑 EXPORTAR CARPETA INVESTIGATIVA PENAL
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Human-in-the-Loop Continuous Learning -->
+      <div class="panel-section">
+        <div class="section-header">
+          <span class="section-icon">🧠</span>
+          <h3>CALIBRACIÓN HUMANA (HUMAN-IN-THE-LOOP)</h3>
+        </div>
+        <div class="feedback-buttons">
+          <button class="btn btn-confirm" id="btnConfirmWildfire">
+            ✅ CONFIRMAR INCENDIO
+          </button>
+          <button class="btn btn-false-positive" id="btnMarkFalsePositive">
+            ❌ FALSO POSITIVO
+          </button>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- MODAL: FICHA OPERATIVA BOMBEROS (IMPRIMIBLE / DESPACHO) -->
+  <div class="modal-overlay" id="bomberosModal">
+    <div class="modal-card">
+      <div class="modal-header bomberos-header">
+        <div class="modal-title-wrap">
+          <span class="modal-fire-icon">🚒</span>
+          <h2>CUERPO DE BOMBEROS — FICHA TÁCTICA DE DESPACHO FORESTAL</h2>
+        </div>
+        <button class="modal-close" id="btnCloseBomberosModal">&times;</button>
+      </div>
+      <div class="modal-body" id="bomberosModalBody">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="window.print()">🖨️ IMPRIMIR FICHA</button>
+        <button class="btn btn-bomberos" id="btnDispatchFinalBomberos">🚨 TRANSMITIR A CENTRAL 132</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CARPETA INVESTIGATIVA CENCO / FISCALÍA -->
+  <div class="modal-overlay" id="cencoModal">
+    <div class="modal-card">
+      <div class="modal-header cenco-header">
+        <div class="modal-title-wrap">
+          <span class="modal-fire-icon">👮</span>
+          <h2>CARABINEROS DE CHILE (CENCO) — EVIDENCIA PERICIAL INCENDIO</h2>
+        </div>
+        <button class="modal-close" id="btnCloseCencoModal">&times;</button>
+      </div>
+      <div class="modal-body" id="cencoModalBody">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="window.print()">🖨️ IMPRIMIR CARPETA</button>
+        <button class="btn btn-carabineros" id="btnSendProsecutorFinal">⚖️ REMITIR A MINISTERIO PÚBLICO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Custom Dashboard Script -->
+  <script src="/static/dashboard.js"></script>
+</body>
+</html>
