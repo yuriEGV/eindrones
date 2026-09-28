@@ -105,7 +105,7 @@ def test_docking_and_verifier_drone():
     print("\n--- 5. Probando Retorno a Base ---")
     station.recall_drone()
     st_ret = station.step(dt=0.5)
-    assert st_ret["drone"]["status"] == "RETURNING"
+    assert st_ret["drone"]["status"] in ("RETURNING", "RTL_RETURNING")
     print("Dron retornando a cuartel de origen:", st_ret["facility"]["name"])
 
 if __name__ == "__main__":

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🔥 FLYBRIDGE v0.1 — Red de Nodos Arbóreos & Drone-in-a-Box de Autoridades</title>
-  <meta name="description" content="Sistema bio-inspirado en NeuroFly combinando nodos sensores ignífugos en árboles con estación Drone-in-a-Box operada desde instalaciones de Bomberos y Carabineros.">
+  <title>🔥 FLYBRIDGE v0.1 — Red LoRaWAN Redundante & Drone-in-a-Box con Dinámica NeuroFly</title>
+  <meta name="description" content="Sistema bio-inspirado en NeuroFly combinando nodos sensores ignífugos en árboles (LoRaWAN 915 MHz SUBTEL) con estación Drone-in-a-Box, pilotaje interactivo, FPV y despacho multiorganismo.">
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,27 +21,31 @@
     <div class="brand-group">
       <div class="brand-logo">
         <span class="logo-emoji">🌿</span>
-        <span class="bio-badge">🧬 NEUROFLY EDGE</span>
+        <span class="bio-badge">🧬 NEUROFLY FLIGHT &amp; EDGE</span>
       </div>
       <div class="brand-titles">
         <h1 class="brand-title">FLYBRIDGE v0.1</h1>
-        <span class="brand-subtitle">RED DE NODOS ARBÓREOS IGNÍFUGOS & ESTACIÓN DRONE-IN-A-BOX EN CUARTEL</span>
+        <span class="brand-subtitle">RED LoRaWAN REDUNDANTE EN ÁRBOLES &amp; DRONE-IN-A-BOX EN CUARTEL</span>
       </div>
     </div>
 
     <!-- Quick Telemetry Badges -->
     <div class="telemetry-bar" id="telemetryBar">
-      <div class="badge-item" title="Nodos sensores ignífugos distribuidos en árboles">
-        <span class="badge-label">NODOS ARBÓREOS</span>
-        <span class="badge-value" id="badgeNodes">10 ACTIVOS (LoRa 915MHz)</span>
+      <div class="badge-item" title="Red LoRaWAN Estrella Redundante: Nodos independientes hacia Gateway de Cumbre">
+        <span class="badge-label">TOPOLOGÍA LoRa</span>
+        <span class="badge-value" id="badgeNodes">ESTRELLA REDUNDANTE (915MHz)</span>
       </div>
-      <div class="badge-item" title="Gateway de cuenca en cumbre con enlace satelital Starlink y 4G">
-        <span class="badge-label">GATEWAY CUENCA</span>
+      <div class="badge-item" title="Gateway en cumbre a 1.120m con enlace satelital Starlink y 4G">
+        <span class="badge-label">GATEWAY CUMBRE</span>
         <span class="badge-value" id="badgeGateway">STARLINK ACTIVO</span>
       </div>
-      <div class="badge-item" title="Estación base protegida en recinto de Bomberos / Carabineros">
+      <div class="badge-item" title="Estación base protegida en recinto de Bomberos / Carabineros con despegue <45s">
         <span class="badge-label">DRONE-IN-A-BOX</span>
         <span class="badge-value alert-pulse" id="badgeDock">DESPLIEGUE &lt;45s</span>
+      </div>
+      <div class="badge-item" title="Normativa SUBTEL Chile para equipos de alcance reducido (915–928 MHz)">
+        <span class="badge-label">NORMA SUBTEL</span>
+        <span class="badge-value" id="badgeSubtel" style="color:#00e5ff;">RES. 1985 (1W MAX)</span>
       </div>
       <div class="badge-item" title="Viento en tiempo real en la cuenca forestal">
         <span class="badge-label">VIENTO CUENCA</span>
@@ -57,8 +61,17 @@
       <button class="btn btn-carabineros" id="btnOpenCencoModal" title="Ver Carpeta Investigativa y Evidencia Forense Carabineros CENCO">
         👮 CENCO FORENSE
       </button>
+      <button class="btn btn-subtel" id="btnOpenSubtelModal" title="Ficha de Cumplimiento Normativo SUBTEL Chile (915 MHz)">
+        📡 SUBTEL CHILE
+      </button>
       <button class="btn btn-warning-action" id="btnSimulateIgnition" title="Simular ignición en un árbol para ver el flujo completo en vivo">
         ⚡ SIMULAR FOCO
+      </button>
+      <button class="btn btn-extinguish" id="btnExtinguishHotspot" title="Extinguir foco de simulacro y restablecer condiciones limpias">
+        🧯 EXTINGUIR FOCO
+      </button>
+      <button class="btn btn-rtl" id="btnDroneRTLTop" title="Hacer que el dron vuelva inmediatamente a su base (RTL)">
+        🏠 VOLVER A BASE (RTL)
       </button>
       <button class="btn btn-primary" id="btnLaunchDroneManual" title="Despegar Dron Verificador Inmediato">
         🚀 DESPEGAR DRON
@@ -75,27 +88,27 @@
     <div class="workflow-arrow">➔</div>
     <div class="workflow-step">
       <span class="step-num">2</span>
-      <span class="step-text"><b>Inferencia NeuroFly:</b> Lóbulo Olfativo (dC/dt) & Filtro Solar</span>
+      <span class="step-text"><b>Inferencia NeuroFly Edge:</b> Lóbulo Olfativo (dC/dt) &amp; Filtro Solar</span>
     </div>
     <div class="workflow-arrow">➔</div>
     <div class="workflow-step">
       <span class="step-num">3</span>
-      <span class="step-text"><b>LoRaWAN / Mesh:</b> Paquete binario ultracompacto (&lt;50 bytes)</span>
+      <span class="step-text"><b>LoRaWAN Redundante:</b> Nodos independientes &lt;50 bytes (AU915 SUBTEL)</span>
     </div>
     <div class="workflow-arrow">➔</div>
     <div class="workflow-step">
       <span class="step-num">4</span>
-      <span class="step-text"><b>Gateway Cuenca:</b> Enlace Satelital Starlink o 4G</span>
+      <span class="step-text"><b>Gateway Cumbre:</b> Enlace Satelital Starlink / 4G</span>
     </div>
     <div class="workflow-arrow">➔</div>
     <div class="workflow-step">
       <span class="step-num">5</span>
-      <span class="step-text"><b>Servidor Central:</b> Triangulación & API de Misiones</span>
+      <span class="step-text"><b>Servidor Central:</b> Triangulación &amp; API de Misiones</span>
     </div>
     <div class="workflow-arrow">➔</div>
     <div class="workflow-step">
       <span class="step-num">6</span>
-      <span class="step-text"><b>Cuartel Oficial:</b> Drone-in-a-Box despegue &lt;45 s</span>
+      <span class="step-text"><b>Cuartel Oficial:</b> Drone-in-a-Box &lt;45 s + Dinámica NeuroFly &amp; RTL</span>
     </div>
     <div class="workflow-arrow">➔</div>
     <div class="workflow-step">
@@ -120,27 +133,37 @@
           <label class="toggle-control">
             <input type="checkbox" id="layerNodes" checked>
             <span class="toggle-slider"></span>
-            <span class="toggle-label">🌳 Nodos Arbóreos Ignífugos (10)</span>
+            <span class="toggle-label">🌳 Nodos Arbóreos (Arrastrables)</span>
           </label>
           <label class="toggle-control">
             <input type="checkbox" id="layerLoraMesh" checked>
             <span class="toggle-slider"></span>
-            <span class="toggle-label">📡 Red LoRaWAN 915 MHz / Gateway</span>
+            <span class="toggle-label">📡 LoRaWAN Estrella Redundante</span>
+          </label>
+          <label class="toggle-control">
+            <input type="checkbox" id="layerCoverage500m" checked>
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">🟢 Site Survey: Radio 500 m</span>
+          </label>
+          <label class="toggle-control">
+            <input type="checkbox" id="layerCoverage1000m">
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">🔵 Site Survey: Radio 1.000 m</span>
           </label>
           <label class="toggle-control">
             <input type="checkbox" id="layerAuthorityBase" checked>
             <span class="toggle-slider"></span>
-            <span class="toggle-label">🏢 Cuartel Bomberos / Retén Carabineros</span>
+            <span class="toggle-label">🏢 Cuartel Bomberos / Retén</span>
           </label>
           <label class="toggle-control">
             <input type="checkbox" id="layerDroneFlight" checked>
             <span class="toggle-slider"></span>
-            <span class="toggle-label">🛸 Dron Verificador &lt;45s</span>
+            <span class="toggle-label">🛸 Dron Verificador NeuroFly</span>
           </label>
           <label class="toggle-control">
             <input type="checkbox" id="layerFireSpread" checked>
             <span class="toggle-slider"></span>
-            <span class="toggle-label">🔥 Cono de Propagación del Fuego</span>
+            <span class="toggle-label">🔥 Cono Propagación Fuego</span>
           </label>
           <label class="toggle-control">
             <input type="checkbox" id="layerBomberosRoute" checked>
@@ -155,11 +178,33 @@
         </div>
       </div>
 
+      <!-- Presets & Reubicación de Nodos en Mapa -->
+      <div class="panel-section">
+        <div class="section-header">
+          <span class="section-icon">📐</span>
+          <h3>DISTRIBUCIÓN &amp; SITE SURVEY LoRaWAN</h3>
+        </div>
+        <div class="site-survey-controls">
+          <label class="preset-label" for="selectNodePreset">Disposición de Nodos en Cuenca:</label>
+          <select id="selectNodePreset" class="preset-select">
+            <option value="SEPARACION_ORIENTATIVA_800M" selected>Separación Orientativa 800 m (500–1.000m)</option>
+            <option value="ALTA_PENDIENTE_QUEBRADAS">Alta Pendiente / Quebradas y Filos</option>
+            <option value="INTERFAZ_URBANO_FORESTAL">Interfaz Urbano-Forestal (Perimetral)</option>
+          </select>
+          <div class="drag-hint-box">
+            💡 <b>Demostración Interactiva:</b> Haz clic y arrastra cualquier nodo en el mapa para probar cómo se recalculan las rutas vehiculares y la trayectoria del dron.
+          </div>
+          <div class="star-topology-note">
+            🛡️ <b>Arquitectura Redundante:</b> Cada nodo transmite de forma autónoma al Gateway en cumbre. Si un nodo es afectado por el fuego, los demás continúan alimentando el cerebro espacial de FLYBRIDGE.
+          </div>
+        </div>
+      </div>
+
       <!-- Live Tree Nodes Status List -->
       <div class="panel-section">
         <div class="section-header">
           <span class="section-icon">🌲</span>
-          <h3>RED DE NODOS ARBÓREOS IGNÍFUGOS</h3>
+          <h3>NODOS ARBÓREOS IGNÍFUGOS (10)</h3>
         </div>
         <div class="tree-nodes-list" id="treeNodesList">
           <!-- Populated by JavaScript -->
@@ -217,10 +262,10 @@
             </p>
           </div>
 
-          <!-- Paquete LoRa Compacto (<50 bytes) -->
+          <!-- Paquete LoRa Compacto (<50 bytes) y SUBTEL -->
           <div class="lora-packet-card">
             <div class="lora-header">
-              <span>📡 PAQUETE LoRaWAN / MESH (915 MHz)</span>
+              <span>📡 PAQUETE LoRaWAN (915 MHz SUBTEL CHILE)</span>
               <span class="lora-size-tag" id="loraSizeTag">32 BYTES (&lt;50 B)</span>
             </div>
             <div class="lora-hex-box" id="loraHexBox">
@@ -233,6 +278,9 @@
               <div><b>Viento:</b> <span id="lpWind">27 km/h</span></div>
               <div><b>Confianza:</b> <span id="lpConf">94%</span></div>
               <div><b>LiFePO4:</b> <span id="lpBat">98%</span></div>
+              <div><b>Dist GW:</b> <span id="lpGwDist">2.4 km</span></div>
+              <div><b>RSSI:</b> <span id="lpRssi">-82 dBm</span></div>
+              <div><b>SNR:</b> <span id="lpSnr">+8.5 dB</span></div>
             </div>
           </div>
 
@@ -243,6 +291,7 @@
               <li>🔥 Chasis: Polímero UL94 V-0 / Barrera Cerámica 600°C</li>
               <li>💧 Membrana PTFE hidrofóbica: Gases ingresan, repulsa de agua y polvo</li>
               <li>🔋 Celda LiFePO4 térmica estable + Mini panel solar continuo</li>
+              <li>📡 Banda AU915 SUBTEL: Potencia +20 dBm (100 mW, máx 1W EIRP)</li>
             </ul>
           </div>
 
@@ -250,7 +299,7 @@
       </div>
     </aside>
 
-    <!-- CENTER: GIS MAP & LIVE VERIFIER DRONE DUAL-VIEW -->
+    <!-- CENTER: GIS MAP & LIVE VERIFIER DRONE FPV COCKPIT -->
     <main class="map-viewport">
       <div id="gisMap" class="gis-map"></div>
       <canvas id="windCanvas" class="overlay-canvas"></canvas>
@@ -260,99 +309,153 @@
         <div class="legend-title">ELEMENTOS TÁCTICOS</div>
         <div class="legend-row"><span class="badge-dot green"></span> Nodo Arbóreo Normal</div>
         <div class="legend-row"><span class="badge-dot red"></span> Nodo en Alerta / Foco</div>
-        <div class="legend-row"><span class="badge-dot cyan"></span> Enlace LoRaWAN 915 MHz</div>
-        <div class="legend-row"><span class="badge-dot purple"></span> Gateway Cuenca (Starlink)</div>
-        <div class="legend-row"><span class="badge-dot blue"></span> Cuartel Oficial Bomberos/Carabineros</div>
-        <div class="legend-row"><span class="badge-dot yellow"></span> Dron Verificador (&lt;45s)</div>
+        <div class="legend-row"><span class="badge-dot cyan"></span> Enlace LoRaWAN Estrella (915MHz)</div>
+        <div class="legend-row"><span class="badge-dot purple"></span> Gateway Cumbre (Starlink 1.120m)</div>
+        <div class="legend-row"><span class="badge-dot blue"></span> Cuartel Oficial Bomberos / Carabineros</div>
+        <div class="legend-row"><span class="badge-dot yellow"></span> Dron Verificador NeuroFly</div>
         <div class="legend-row"><span class="badge-dot orange"></span> Cono de Propagación del Fuego</div>
       </div>
 
-      <!-- LIVE HUD: DOCKING STATION & DRON VERIFICADOR (<45 s) -->
-      <div class="drone-box-hud" id="droneBoxHud">
-        <div class="hud-header">
+      <!-- CABINA DE PILOTAJE FPV & CONTROL DEL DRON VERIFICADOR -->
+      <div class="fpv-cockpit-hud" id="fpvCockpitHud">
+        <div class="hud-top-bar">
           <div class="hud-title-wrap">
             <span class="hud-pulse-dot"></span>
             <div>
-              <span class="hud-main-title">ESTACIÓN DRONE-IN-A-BOX · TENENCIA OFICIAL</span>
-              <span class="hud-sub-title" id="hudFacilityName">14ª Cía Bomberos & Retén Carabineros San Carlos</span>
+              <span class="hud-main-title">CABINA DE PILOTAJE FPV &amp; DINÁMICA DE VUELO NEUROFLY</span>
+              <span class="hud-sub-title" id="hudFlightState">ESTADO BIOLÓGICO: CRUISE_BIOMIMETIC · ESTABILIZACIÓN OPTOMOTORA ACTIVA</span>
             </div>
           </div>
-          <div class="hud-hatch-indicator">
-            <span class="h-label">COMPUERTA MOTORIZADA:</span>
-            <span class="h-val open" id="hudHatchVal">ABIERTA (100%)</span>
+          <div class="hud-quick-controls">
+            <button class="cam-toggle-btn active" id="btnCamOptical" title="Ver Cámara Óptica 4K Forense con Zoom">
+              📷 ÓPTICA 4K
+            </button>
+            <button class="cam-toggle-btn" id="btnCamThermal" title="Ver Cámara Térmica Radiométrica FLIR">
+              🌡️ FLIR IR
+            </button>
+            <button class="btn btn-rtl btn-small" id="btnDroneRTLHud" title="Retorno autónomo y aterrizaje en base (RTL)">
+              🏠 RTL A BASE
+            </button>
           </div>
         </div>
 
-        <!-- Takeoff Timer & Flight Bar -->
-        <div class="launch-countdown-row">
-          <div class="countdown-card">
-            <span class="c-title">VENTANA DE DESPEGUE AUTÓNOMO</span>
-            <div class="c-number-row">
-              <span class="c-num" id="hudLaunchTime">32.0</span>
-              <span class="c-unit">segundos</span>
-              <span class="c-tag verified" id="hudLaunchBadge">✅ DESPEGUE EXITOSO (&lt;45s)</span>
-            </div>
-          </div>
-          <div class="drone-flight-telemetry">
-            <div><b>Estado:</b> <span id="hudDroneStatus">RECONOCIMIENTO EN ÓRBITA</span></div>
-            <div><b>Velocidad:</b> <span id="hudDroneSpeed">76.0 km/h</span></div>
-            <div><b>Altitud:</b> <span id="hudDroneAlt">75 m</span></div>
-            <div><b>Batería:</b> <span id="hudDroneBattery">94%</span></div>
-          </div>
-        </div>
-
-        <!-- DUAL SPECIALIZED PAYLOAD: FLIR Radiometric Thermal + 4K Optical Forensic -->
-        <div class="payload-dual-grid">
+        <!-- FPV Display Screen with OSD Tape Overlay -->
+        <div class="fpv-screen-container" id="fpvScreenContainer">
           
-          <!-- Cámara Térmica Radiométrica (FLIR) para Bomberos -->
-          <div class="payload-box flir-box">
-            <div class="p-header">
-              <span>🌡️ FLIR RADIOMÉTRICA (BOMBEROS)</span>
-              <span class="p-tag ir">INFRARROJO IR</span>
-            </div>
-            <div class="flir-screen">
-              <div class="flir-crosshair"></div>
-              <div class="flir-thermal-blob"></div>
-              <div class="flir-overlay-text">
-                <div>NÚCLEO: <b id="flirCoreTemp">542.0 °C</b></div>
-                <div>PERÍMETRO: <b id="flirPerimeter">188.5 m</b></div>
-                <div>PROPAGACIÓN: <b id="flirSpreadRate">3.8 m/min</b></div>
-                <div>INTENSIDAD: <b id="flirIntensity">1,850 kW/m</b></div>
+          <!-- Synthetic Live Camera Video Canvas -->
+          <canvas id="fpvCanvas" class="fpv-canvas" width="640" height="240"></canvas>
+
+          <!-- OSD Overlay HUD -->
+          <div class="fpv-osd-overlay">
+            
+            <!-- Artificial Horizon Pitch Ladder -->
+            <div class="osd-attitude-indicator" id="osdAttitude">
+              <div class="horizon-line" id="horizonLine"></div>
+              <div class="pitch-ladder">
+                <span class="ladder-mark">+10</span>
+                <span class="ladder-mark zero">── · ──</span>
+                <span class="ladder-mark">-10</span>
               </div>
             </div>
-            <div class="payload-footer-note">
-              Datos para dimensionar carros bomba, líneas de agua y ataque directo por el flanco.
+
+            <!-- Compass Heading Ribbon Tape -->
+            <div class="osd-compass-tape">
+              <span class="compass-marker" id="osdHeadingVal">065° NE</span>
+            </div>
+
+            <!-- Left Speed Tape & Right Altitude Tape -->
+            <div class="osd-speed-tape">
+              <span class="tape-lbl">VEL</span>
+              <span class="tape-val" id="osdSpeedVal">76.0</span>
+              <span class="tape-unit">km/h</span>
+            </div>
+
+            <div class="osd-alt-tape">
+              <span class="tape-lbl">ALT</span>
+              <span class="tape-val" id="osdAltVal">75.0</span>
+              <span class="tape-unit">m</span>
+            </div>
+
+            <!-- Central Crosshair with Laser Rangefinder & Temp -->
+            <div class="osd-crosshair">
+              <div class="ch-box"></div>
+              <div class="ch-info">
+                <div>DIST: <span id="osdLrfDist">142 m</span></div>
+                <div>FLIR: <span id="osdCrosshairTemp">542.0 °C</span></div>
+                <div>ZOOM: <span id="osdZoomLevel">12.5x</span></div>
+              </div>
+            </div>
+
+            <!-- Bounding Box Overlays (Visible in Optical Mode) -->
+            <div class="osd-detections-layer" id="osdDetectionsLayer">
+              <div class="target-box car" style="top:22%; left:28%; width:18%; height:32%;">
+                <span class="tb-tag">CAMIONETA SOSPECHOSA (94%)</span>
+              </div>
+              <div class="target-box track" style="top:58%; left:45%; width:20%; height:25%;">
+                <span class="tb-tag">HUELLA TRACCIÓN RECIENTE (88%)</span>
+              </div>
+              <div class="target-box person" style="top:30%; right:22%; width:12%; height:40%;">
+                <span class="tb-tag">INDIVIDUO EN FUGA (82%)</span>
+              </div>
+            </div>
+
+            <!-- Bottom Hash & Cryptographic Signature -->
+            <div class="osd-bottom-meta">
+              <span>SHA-256 EVIDENCIA: <b id="osdHashVal">E8F4A9C102BF7A11</b></span>
+              <span>GIMBAL: PITCH <b id="osdGimbalPitch">-35°</b> | YAW <b id="osdGimbalYaw">0°</b></span>
+              <span>BATERÍA: <b id="osdBatteryVal">94%</b></span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- PILOT & GIMBAL CONTROLS STRIP -->
+        <div class="pilot-controls-strip">
+          
+          <!-- Virtual Pilot D-Pad (W/A/S/D / Arrows) -->
+          <div class="dpad-block">
+            <span class="ctrl-sub-label">🕹️ PILOTAJE DINÁMICO (W/A/S/D / FLECHAS)</span>
+            <div class="dpad-buttons-cluster">
+              <button class="pilot-btn" id="btnPilotFwd" title="Avanzar (W o Flecha Arriba)">▲<span class="k-hint">W</span></button>
+              <div class="dpad-row-mid">
+                <button class="pilot-btn" id="btnPilotLeft" title="Virar Izquierda (A o Flecha Izquierda)">◄<span class="k-hint">A</span></button>
+                <button class="pilot-btn hover-btn" id="btnPilotHover" title="Hover / Frenar Inercia (Espacio)">⏹<span class="k-hint">STOP</span></button>
+                <button class="pilot-btn" id="btnPilotRight" title="Virar Derecha (D o Flecha Derecha)">►<span class="k-hint">D</span></button>
+              </div>
+              <button class="pilot-btn" id="btnPilotBack" title="Retroceder (S o Flecha Abajo)">▼<span class="k-hint">S</span></button>
             </div>
           </div>
 
-          <!-- Cámara Óptica 4K con Zoom para Carabineros CENCO y Fiscalía -->
-          <div class="payload-box optical-box">
-            <div class="p-header">
-              <span>📷 ÓPTICA 4K CON ZOOM FORENSE (CENCO)</span>
-              <span class="p-tag zoom">ZOOM 12.5x</span>
+          <!-- Altitude & Orbit Commands -->
+          <div class="altitude-block">
+            <span class="ctrl-sub-label">⬆️ ALTITUD &amp; MODO</span>
+            <div class="alt-buttons-grid">
+              <button class="action-pilot-btn" id="btnAltUp" title="Subir Altitud +5m (Q o R)">➕ SUBIR (+5m)</button>
+              <button class="action-pilot-btn" id="btnAltDown" title="Bajar Altitud -5m (E o F)">➖ BAJAR (-5m)</button>
+              <button class="action-pilot-btn" id="btnOrbitMode" title="Activar Órbita Automática sobre el Objetivo">🔄 ÓRBITA 360°</button>
+              <button class="action-pilot-btn rtl" id="btnRTLPilot" title="Retorno Inmediato a Base (RTL)">🏠 RTL A BASE</button>
             </div>
-            <div class="optical-screen">
-              <div class="optical-bbox car-bbox">
-                <span class="bbox-label">VEHÍCULO SOSPECHOSO (94%)</span>
+          </div>
+
+          <!-- Gimbal & Zoom Controls -->
+          <div class="gimbal-block">
+            <span class="ctrl-sub-label">📷 CONTROL GIMBAL &amp; ZOOM 4K</span>
+            <div class="gimbal-sliders-grid">
+              <div class="slider-item">
+                <span>Inclinación Gimbal (Pitch):</span>
+                <input type="range" id="sliderGimbalPitch" min="-90" max="15" value="-35">
+                <span id="txtGimbalPitch">-35°</span>
               </div>
-              <div class="optical-bbox track-bbox">
-                <span class="bbox-label">HUELLA TRACCIÓN RECIENTE (88%)</span>
+              <div class="slider-item">
+                <span>Zoom Óptico (1x a 30x):</span>
+                <input type="range" id="sliderZoom" min="1" max="30" step="0.5" value="12.5">
+                <span id="txtZoomVal">12.5x</span>
               </div>
-              <div class="optical-bbox suspect-bbox">
-                <span class="bbox-label">INDIVIDUO EN FUGA (82%)</span>
-              </div>
-              <div class="optical-overlay-text">
-                <div>EVIDENCIA SHA-256: <b id="opticalHash">E8F4A9C102BF7A11</b></div>
-                <div>CAPTURA: <b id="opticalTime">15:44:20 UTC</b></div>
-                <div>ESTADO: <b>DISPONIBLE MINISTERIO PÚBLICO</b></div>
-              </div>
-            </div>
-            <div class="payload-footer-note">
-              Registro probatorio para cierre perimetral de rutas y carpeta penal ante incendios intencionales.
             </div>
           </div>
 
         </div>
+
       </div>
     </main>
 
@@ -457,7 +560,7 @@
             <div class="water-item">
               <div>
                 <b>Tranque Agrícola San Carlos</b>
-                <div class="w-sub">Apto motobomba & helibalde Bambi</div>
+                <div class="w-sub">Apto motobomba &amp; helibalde Bambi</div>
               </div>
               <div class="w-meta">150.000 L · a 1.4 km</div>
             </div>
@@ -482,7 +585,7 @@
         <div class="panel-section">
           <div class="section-header">
             <span class="section-icon">🛡️</span>
-            <h3>ALERTA CENCO & EVIDENCIA FORENSE</h3>
+            <h3>ALERTA CENCO &amp; EVIDENCIA FORENSE</h3>
           </div>
           <div class="cenco-alert-banner">
             <div class="cab-title">ALERTA POLICIAL POR IGNICIÓN SOSPECHOSA</div>
@@ -588,6 +691,50 @@
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="window.print()">🖨️ IMPRIMIR CARPETA</button>
         <button class="btn btn-carabineros" id="btnSendProsecutorFinal">⚖️ REMITIR A MINISTERIO PÚBLICO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONFORMIDAD REGULATORIA SUBTEL CHILE (915 MHz) -->
+  <div class="modal-overlay" id="subtelModal">
+    <div class="modal-card">
+      <div class="modal-header subtel-header">
+        <div class="modal-title-wrap">
+          <span class="modal-fire-icon">📡</span>
+          <h2>SUBSECRETARÍA DE TELECOMUNICACIONES (SUBTEL CHILE) — CONFORMIDAD 915 MHz</h2>
+        </div>
+        <button class="modal-close" id="btnCloseSubtelModal">&times;</button>
+      </div>
+      <div class="modal-body" id="subtelModalBody">
+        <div style="background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.3); padding: 0.85rem; border-radius: 8px;">
+          <h3 style="color:#00e5ff; margin-bottom:0.35rem;">📜 Certificación de Dispositivos de Alcance Reducido</h3>
+          <p style="font-size:0.75rem; color:#f0f4fc; line-height:1.4;">
+            El despliegue de la red de nodos arbóreos FLYBRIDGE en territorio chileno cumple estrictamente con la normativa técnica vigente de la <b>Subsecretaría de Telecomunicaciones (SUBTEL)</b> para la banda ISM/SRD de 915 a 928 MHz.
+          </p>
+        </div>
+
+        <div style="margin-top:0.6rem;">
+          <h4 style="color:#ffeb3b;">⚖️ Marco Regulatorio Vigente:</h4>
+          <ul style="margin-left:1.2rem; font-size:0.75rem; line-height:1.6; color:#9aa8c2;">
+            <li><b>Norma Técnica:</b> Resolución Exenta SUBTEL N° 1.985 / 2017 y modificaciones (Art. 1° letra j).</li>
+            <li><b>Categoría de Dispositivo:</b> Equipos de Radiocomunicaciones de Corto Alcance / Espectro Ensanchado y Modulación Digital.</li>
+            <li><b>Banda de Frecuencias:</b> 915.000 MHz a 928.000 MHz (Plan de Canales AU915 / US915 para Chile).</li>
+          </ul>
+        </div>
+
+        <div style="margin-top:0.6rem;">
+          <h4 style="color:#00e676;">⚡ Parámetros Técnicos de Transmisión Configurados:</h4>
+          <ul style="margin-left:1.2rem; font-size:0.75rem; line-height:1.6; color:#9aa8c2;">
+            <li><b>Potencia Radiada Aparente (PIRE / EIRP):</b> Configurada en nodos a <b>+20 dBm (100 mW)</b>, ampliamente dentro del límite legal máximo de <b>1 Watt (30 dBm)</b>.</li>
+            <li><b>Densidad Espectral de Potencia:</b> Inferior a 8 dBm en cualquier banda de 3 kHz.</li>
+            <li><b>Modulación:</b> LoRa Chirp Spread Spectrum (CSS) con anchos de banda de 125 kHz y 500 kHz, Spreading Factor dinámico SF7 a SF10.</li>
+            <li><b>Topología de Red:</b> Estrella LoRaWAN Redundante (cada nodo se conecta de forma directa e independiente al Gateway en cumbre, eliminando cuello de botella de saltos).</li>
+            <li><b>Site Survey Recomendado:</b> Separación inicial orientativa de 500 m a 1.000 m, validada según el perfil topográfico y la cota de elevación del Gateway de cuenca (1.120 m).</li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="btnOkSubtel">ENTENDIDO</button>
       </div>
     </div>
   </div>
