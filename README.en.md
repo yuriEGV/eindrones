@@ -77,7 +77,11 @@ python tests/test_docking_and_drone.py
 python tests/test_mission_server.py
 python tests/test_api_server.py
 
-# Launch Tactical GIS Web Dashboard
-uvicorn firewatch.server:app --host 0.0.0.0 --port 8000 --reload
+# Launch Tactical GIS Web Dashboard (Any of the following):
+python -m uvicorn firewatch.server:app --host 0.0.0.0 --port 8000 --reload
+# Or:
+python run_dashboard.py
+# Or on Windows:
+run_flybridge.bat
 ```
 Open your browser at `http://localhost:8000/`.

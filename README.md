@@ -148,8 +148,17 @@ Ubicar la estación base en dependencias operativas de las autoridades (**Cuarte
   ```
 
 ### Ejecutar el Servidor Táctico GIS en Vivo
+Puedes usar cualquiera de las siguientes opciones:
+
 ```bash
-uvicorn firewatch.server:app --host 0.0.0.0 --port 8000 --reload
+# Opción 1 (Recomendada en Windows):
+python -m uvicorn firewatch.server:app --host 0.0.0.0 --port 8000 --reload
+
+# Opción 2 (Script lanzador directo):
+python run_dashboard.py
+
+# Opción 3 (Doble clic en Windows):
+run_flybridge.bat
 ```
 Abre tu navegador en:
 ```text
